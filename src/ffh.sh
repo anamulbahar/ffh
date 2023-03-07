@@ -1,10 +1,59 @@
 #!/bin/sh
 
+# usage function:
+usage() {
+    echo "Usage: {bin} [options] [arguments]"
+    echo "Options:"
+    echo "  -h, --help, help, show this help message and exit"
+    echo "  -v, --version, version, show version and exit"
+    echo "  -l, --license, license, show license and exit"
+    echo "  -a, --about, about, show about and exit"
+    echo "  -c, --contact, contact, show contact and exit"
+    echo "  -u, --update, update, update ffh"
+    echo "  -i, --install, install, install ffh"
+    echo "  -r, --remove, remove, remove ffh"
+    echo "  -s, --show, show, show ffh"
+    echo "  -e, --edit, edit, edit ffh"
+    echo "  -d, --debug, debug, debug ffh"
+    echo "  -p, --profile, profile, profile ffh"
+    echo "  -t, --test, test, test ffh"
+    echo "  -b, --build, build, build ffh"
+    echo "  -f, --fix, fix, fix ffh"
+    echo "  -g, --generate, generate, generate ffh"
+    echo "  -m, --make, make, make ffh"
+    echo "  -n, --new, new, new ffh"
+    echo "  -o, --open, open, open ffh"
+    echo "  -x, --execute, execute, execute ffh"
+    echo "  -y, --run, run, run ffh"
+    echo "  -z, --start, start, start ffh"
+    echo "  -w, --stop, stop, stop ffh"
+    echo "  -k, --kill, kill, kill ffh"
+    echo "  -q, --quit, quit, quit ffh"
+    echo "  -j, --jump, jump, jump ffh"
+    echo "  -A, --add, add, add ffh"
+    echo "  -D, --delete, delete, delete ffh"
+    echo "  -E, --edit, edit, edit ffh"
+}
+if [[ "$1" == "" || "$1" == "-h"  ||  "$1" == "help"  ||  "$1" == "--help" ]]; then usage; exit 1; fi
+
+
+
+
+# version function:
+version() {
+    echo "ffh version 1.0.0"
+}
+if [[ "$1" == "-v"  ||  "$1" == "version"  ||  "$1" == "--version" ]]; then version; exit 1; fi
+
+
+
+
+# license function:
 license() {
     echo "ffh is licensed under the MIT License"
     echo "MIT License"
     echo ""
-    echo "Copyright (c) 2022-2023"
+    echo "Copyright (c) 2022-2023, ffh"
     echo ""
     echo "Permission is hereby granted, free of charge, to any person obtaining a copy"
     echo "of this software and associated documentation files (the \"Software\"), to deal"
@@ -25,22 +74,6 @@ license() {
     echo "SOFTWARE."
 }
 if [[ "$1" == "-l"  ||  "$1" == "license"  ||  "$1" == "--license" ]]; then license; exit 1; fi
-
-usage() {
-    echo "Usage: {bin} [options] [arguments]"
-    echo "Options:"
-    echo "  -h, --help, help, show this help message and exit"
-    echo "  -v, --version, version, show version and exit"
-    echo "  -l, --license, license, show license and exit"
-}
-
-if [[ "$1" == "" || "$1" == "-h"  ||  "$1" == "help"  ||  "$1" == "--help" ]]; then usage; exit 1; fi
-
-
-version() {
-    echo "ffh version 0.1.0"
-}
-if [[ "$1" == "-v"  ||  "$1" == "version"  ||  "$1" == "--version" ]]; then version; exit 1; fi
 
 
 gccFunction() {
@@ -181,6 +214,16 @@ if [ -f "$1" ]; then
 fi
 
 
+# ssh servers
+if [ "$1" == "ssh" ]; then
+    if [ "$2" == "cs1" ]; then ssh root@cs1.cos.one;
+        elif [ "$2" == "ps5" ]; then ssh root@ps5.cos.one;
+        elif [ "$2" == "ps6" ]; then ssh root@ps6.cos.one;
+        else echo "Usage: {bin} ssh [cs1|ps5|ps6]";
+        exit 1;
+    fi
+fi
+
 
 # ffmpeg, exiftool functions
 # if $1 is tag then show tag of $2
@@ -209,6 +252,9 @@ if [ "$1" == "stop" ]; then
     else killall ffplay;
     fi
 fi
+
+
+
 
 
 
@@ -276,6 +322,38 @@ if [ "$1" == "reset" ] && [ "$2" == "finder" ] && [ `uname` = "Darwin" ]; then d
 if [ "$1" == "reset" ] && [ "$2" == "launchpad" ] && [ `uname` = "Darwin" ]; then defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock; fi
 if [ "$1" == "resetl" ] && [ `uname` = "Darwin" ]; then defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock; fi
 if [ "$1" == "resetlh" ] && [ `uname` = "Darwin" ]; then sudo chflags hidden /Applications/*; defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock; fi
+
+# reset safari to default on macos
+if [ "$1" == "reset" ] && [ "$2" == "safari" ] && [ `uname` = "Darwin" ]; then defaults delete com.apple.safari; killall Safari; fi
+
+# reset terminal to default on macos
+if [ "$1" == "reset" ] && [ "$2" == "terminal" ] && [ `uname` = "Darwin" ]; then defaults delete com.apple.Terminal; killall Terminal; fi
+
+
+
+
+# vim copilot
+if [ "$1" == "vim" ] && [ "$2" == "copilot" ]; then
+    if [ "$3" == "setup" ]; then
+        if [ -d ~/.vim/pack/github/start/copilot.vim ]; then rm -rf ~/.vim/pack/github/start/copilot.vim; fi;
+        git clone https://github.com/github/copilot.vim.git ~/.vim/pack/github/start/copilot.vim;
+        vim -c "Copilot setup" -c "q";
+    else
+        ffh vim copilot setup;
+    fi
+fi
+
+
+
+
+# copilot setup
+if [ "$1" == "copilot" ]; then
+    if [ "$2" == "setup" ]; then
+        ffh vim copilot setup;
+    else
+        echo "Use this command to setup copilot for vim: ffh (vim) copilot setup";
+    fi
+fi
 
 
 
@@ -428,3 +506,89 @@ if [ "$1" == "serve" ]; then
         browser-sync start --server --files .;
     fi
 fi
+
+# mail functions
+if [ "$1" == "mail" ]; then
+    mkdir -p ~/Documents/var/mail/$(date +%Y)-$(date +%m)-$(date +%d)-$(date +%H)-$(date +%M)-$(date +%S)-$2;
+    cd ~/Documents/var/mail/$(date +%Y)-$(date +%m)-$(date +%d)-$(date +%H)-$(date +%M)-$(date +%S)-$2;
+    touch mail.txt;
+    echo "To: $2" >> mail.txt;
+    echo "CC: dev/null" >> mail.txt;
+    echo "From: anamulbahar.com <mail@anamulbahar.com>" >> mail.txt;
+    echo "Subject: $3" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "[2 min read, response requested at #1]" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "Dear recipient(s)," >> mail.txt;
+    echo "Greetings!" >> mail.txt;
+    echo "Reason for the email" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "[1] Points" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "Regards," >> mail.txt;
+    echo "Anamul Bahar" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "Disclaimer:" >> mail.txt;
+    echo "This email and any attachments may contain privileged and/" >> mail.txt;
+    echo "or confidential information and are intended solely for the" >> mail.txt;
+    echo "named addressee only. If you have received this e-mail in" >> mail.txt;
+    echo "error, please notify the sender and delete this e-mail." >> mail.txt;
+    echo "You are hereby notified that any use, retention, disclosure," >> mail.txt;
+    echo "dissemination, copying, or taking any other action in" >> mail.txt;
+    echo "reliance on contents of this e-mail is prohibited." >> mail.txt;
+    echo "Deletion of completed and old e-mail thread is recommended" >> mail.txt;
+    echo "for best privacy practice." >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "metadata:" >> mail.txt;
+    echo "to: $2" >> mail.txt;
+    echo "cc: dev/null" >> mail.txt;
+    echo "from: anamulbahar.com <mail@anamulbahar.com>" >> mail.txt;
+    echo "date: $(date)" >> mail.txt;
+    echo "subject: $3" >> mail.txt;
+    echo "security/encryption: Transport Layer Security (TLS) v1.3" >> mail.txt;
+    echo "mailed-by: anamulbahar.com" >> mail.txt;
+    echo "singed-by: anamulbahar.com" >> mail.txt;
+    echo "automation-script: Rust 1.66.1 (Darwin 21.6.0 x86_64)" >> mail.txt;
+    echo "written-with: VIM 9.0.1023 (Darwin 21.6.0 x86_64)" >> mail.txt;
+    echo "sent-via: Apple Mail 16.0 (3696.120.41.1.2)" >> mail.txt;
+    echo "sent-with: macOS 12.6.3 (Build 21G419)" >> mail.txt;
+    echo "stored-on: var/mail/$(date +%Y)-$(date +%m)-$(date +%d)-$(date +%H)-$(date +%M)-$(date +%S)-$2" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    echo "" >> mail.txt;
+    vi mail.txt;
+fi
+
+# clear cache 
+if [ "$1" == "clear" ]; then
+    if [ "$2" == "cache" ]; then
+        if [ -f ~/.bash_history ]; then rm ~/.bash_history; fi;
+        if [ -f ~/.bash_logout ]; then rm ~/.bash_logout; fi;
+        if [ -f ~/.viminfo ]; then rm ~/.viminfo; fi;
+        if [ -f ~/.lesshst ]; then rm ~/.lesshst; fi;
+        if [ -f ~/.zsh_history ]; then rm ~/.zsh_history; fi;
+        if [ -f ~/.config/vifm/vifminfo.json ]; then rm ~/.config/vifm/vifminfo.json; fi;
+        if [ -d ~/.bash_sessions ]; then rm -rf ~/.bash_sessions; fi;
+        if [ -d ~/.cache ]; then rm -rf ~/.cache; fi;
+        if [ -d ~/.local/share/Trash ]; then rm -rf ~/.local/share/Trash; fi;
+        if [ -d ~/.local/share/vifm/Trash ]; then rm -rf ~/.local/share/vifm/Trash; fi;
+        if [ -d ~/.vim/view ]; then rm -rf ~/.vim/view; fi;
+        if [ -d ~/.zsh_sessions ]; then rm -rf ~/.zsh_sessions; fi;
+        if [ -d ~/Library/Caches ]; then rm -rf ~/Library/Caches; fi;
+        if [ -d ~/Library/Logs ]; then rm -rf ~/Library/Logs; fi;
+    fi
+fi
+
